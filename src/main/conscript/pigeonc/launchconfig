@@ -1,0 +1,9 @@
+[app]
+  version: 1.0.0
+  org: me.waft
+  name: pigeonc
+  class: me.waft.pigeon.Main
+[scala]
+  version: 2.11.7
+[repositories]
+  local
