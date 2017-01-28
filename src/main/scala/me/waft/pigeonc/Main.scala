@@ -1,4 +1,4 @@
-package me.waft.pigeon
+package me.waft.pigeonc
 
 class Main extends xsbti.AppMain {
   def run(configuration: xsbti.AppConfiguration): xsbti.MainResult = {
