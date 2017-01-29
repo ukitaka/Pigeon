@@ -1,3 +1,6 @@
 package me.waft.pigeon.AST
 
-case class Decl() extends ASTNode
+trait DeclTopLevel extends ASTNode
+
+case class DeclVar() extends DeclTopLevel
+
