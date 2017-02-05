@@ -11,7 +11,6 @@ trait Parser[+A] { lhs =>
 
   def map2[B, C](p2: => Parser[B])(f: (A, B) => C): Parser[C] = product(p2).map(f.tupled)
 
-
   def listOf[A](n: Int): Parser[List[A]] = ???
 
   def many: Parser[List[A]] = ???
