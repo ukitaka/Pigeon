@@ -1,7 +1,5 @@
 package me.waft.pigeon.parser
 
-import me.waft.pigeon.AST.DeclTopLevel
-
 trait Parser[+A] { lhs =>
   def run(location: Location): Result[A]
 
@@ -22,12 +20,15 @@ trait Parser[+A] { lhs =>
 }
 
 object Parser {
-  def parseTranslationUnit(string: String): Parser[List[DeclTopLevel]] = ???
-
-  def string(s: String): Parser[String] = ???
+  def string(s: String): Parser[String] = new Parser[String] {
+    def run(location: Location): Result[String] =
+      if (location.input.startsWith(s))
+          Success(s, s.length)
+      else
+          Failure(ParseError)
+  }
 
   def char(c: Char): Parser[Char] = string(c.toString).map(_.charAt(0))
 
   def success[A](a: A): Parser[A] = string("").map(_ => a)
-
 }
