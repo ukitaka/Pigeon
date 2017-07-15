@@ -1,17 +1,13 @@
 name := """pigeonc"""
 
-version := "1.0.0"
+version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.1"
 
-organization := "me.waft"
-
-// Change this to another test framework if you prefer
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+libraryDependencies += "com.lihaoyi" %% "fastparse" % "0.4.3"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 lazy val root = (project in file(".")).
   enablePlugins(ConscriptPlugin).
-  settings(
-    // other settings here
-  )
+  settings()
 
