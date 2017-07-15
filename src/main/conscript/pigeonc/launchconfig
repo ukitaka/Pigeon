@@ -4,6 +4,6 @@
   name: pigeonc
   class: me.waft.pigeonc.Main
 [scala]
-  version: 2.11.7
+  version: 2.12.1
 [repositories]
   local
