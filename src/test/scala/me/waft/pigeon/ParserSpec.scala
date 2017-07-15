@@ -25,4 +25,8 @@ class ParserSpec extends FlatSpec with Matchers {
     Parser.intP.parse("10").get.value should(be(Int(10)))
     Parser.intP.parse("10281").get.value should(be(Int(10281)))
   }
+
+  "parser" should "parse plus" in {
+    Parser.termP.parse("0 + 1").get.value should (be(Plus(Int(0), Int(1))))
+  }
 }
