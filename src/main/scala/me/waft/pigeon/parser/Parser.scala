@@ -1,34 +1,28 @@
 package me.waft.pigeon.parser
 
-trait Parser[+A] { lhs =>
-  def run(location: Location): Result[A]
-
-  def map[B](f: A => B): Parser[B] = new Parser[B] {
-    def run(location: Location) = lhs.run(location).map(f)
-  }
-
-  def map2[B, C](p2: => Parser[B])(f: (A, B) => C): Parser[C] = product(p2).map(f.tupled)
-
-  def listOf[A](n: Int): Parser[List[A]] = ???
-
-  def many: Parser[List[A]] = ???
-  def many1: Parser[List[A]] = ???
-
-  def product[B](p: Parser[B]): Parser[(A, B)] = ???
-
-  def slice(): Parser[String] = ???
-}
+import fastparse.WhitespaceApi
+import fastparse.all._
+import me.waft.pigeon.ast.Term
 
 object Parser {
-  def string(s: String): Parser[String] = new Parser[String] {
-    def run(location: Location): Result[String] =
-      if (location.input.startsWith(s))
-          Success(s, s.length)
-      else
-          Failure(ParseError)
+
+  private[this] val White = WhitespaceApi.Wrapper {
+    NoTrace(" ".rep)
   }
 
-  def char(c: Char): Parser[Char] = string(c.toString).map(_.charAt(0))
+  import White._
 
-  def success[A](a: A): Parser[A] = string("").map(_ => a)
+  val trueP: Parser[Term] = P("true").map(_ => Term.True)
+  val falseP: Parser[Term] = P("false").map(_ => Term.False)
+  def boolP: Parser[Term] = trueP | falseP
+
+  val ifP: Parser[Term] = P("if" ~ termP ~ "then" ~ termP ~ "else" ~ termP).map(r => Term.If(r._1, r._2, r._3))
+
+  private val zeroP: Parser[String] = P("0").!
+  private val headDigitsP: Parser[String] = P(CharIn('1' to '9')).!
+  private val nonHeadDigitsP: Parser[String] = P(CharIn('0' to '9')).!
+  private val integerP: Parser[String] = P(headDigitsP ~ nonHeadDigitsP.rep()).map(r => r._2.foldLeft(r._1)(_ + _))
+
+  val intP: Parser[Term] = P(zeroP | integerP).map(_.toInt).map(Term.Int)
+  val termP: Parser[Term] = boolP | intP | ifP
 }
