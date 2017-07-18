@@ -22,19 +22,22 @@ object Parser {
     // number
     val intP: Parser[Term] = P(CharIn('0' to '9').rep(1).!.map(_.toInt).map(Term.Int))
 
-    // operator
-    private val plusP: Parser[Operator] = P("+").map(_ => Operator.Plus)
-    private val minusP: Parser[Operator] = P("-").map(_ => Operator.Minus)
-    private val timesP: Parser[Operator] = P("*").map(_ => Operator.Times)
+    private val addP: Parser[Operator] = P("+").map(_ => Operator.Add)
+    private val subP: Parser[Operator] = P("-").map(_ => Operator.Sub)
+    private val mulP: Parser[Operator] = P("*").map(_ => Operator.Mul)
     private val divP: Parser[Operator] = P("/").map(_ => Operator.Div)
-    private val opP: Parser[Operator] = plusP | minusP | timesP | divP
 
-    private def numberFactor: Parser[Term] = intP | numberOpsP | parenNumberOpsP
-    val numberOpsP: Parser[Term] = P(numberFactor ~ opP ~ numberFactor).map(Term.Ops.tupled)
-    val parenNumberOpsP: Parser[Term] = P("(" ~ numberOpsP ~ ")")
+    private val addSubP: Parser[Operator] = addP | subP
+    private val mulDivP: Parser[Operator] = mulP | divP
 
-    val numberExprP: Parser[Term] = numberOpsP | parenNumberOpsP | intP
+    private def mulDivLeftExprP: Parser[Term] = parenExprP | intP
+    private def mulDivExprP: Parser[Term] = P(mulDivLeftExprP ~ mulDivP ~ exprP).map(Term.Ops.tupled)
+    private def addSubLeftExprP: Parser[Term] = parenExprP | mulDivExprP | intP
+    private def addSubExprP: Parser[Term] = P(addSubLeftExprP ~ addSubP ~ exprP).map(Term.Ops.tupled)
+
+    private def parenExprP: Parser[Term] = P("(" ~ exprP ~ ")")
+    def exprP: Parser[Term] = addSubExprP | mulDivExprP | parenExprP | intP
   }
 
-  val termP: Parser[Term] = boolP | Number.numberExprP | ifP
+  val termP: Parser[Term] = boolP | Number.exprP | ifP
 }
