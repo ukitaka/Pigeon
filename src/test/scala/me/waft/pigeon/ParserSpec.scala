@@ -31,5 +31,12 @@ class ParserSpec extends FlatSpec with Matchers {
     Parser.Number.exprP.parse("0 + 1").get.value should (be(Ops(Int(0), Operator.Add, Int(1))))
     Parser.Number.exprP.parse("( 0 + 1 )").get.value should (be(Ops(Int(0), Operator.Add, Int(1))))
     Parser.Number.exprP.parse("(1 + 2) + 3").get.value should (be(Ops(Ops(Int(1), Operator.Add, Int(2)), Operator.Add, Int(3))))
+    Parser.Number.exprP.parse("1 + 2 + 3").get.value should (be(Ops(Int(1), Operator.Add, Ops(Int(2), Operator.Add, Int(3)))))
+    Parser.Number.exprP.parse("1 + (2 + 3)").get.value should (be(Ops(Int(1), Operator.Add, Ops(Int(2), Operator.Add, Int(3)))))
+    Parser.Number.exprP.parse("(1 + 2 + 3)").get.value should (be(Ops(Int(1), Operator.Add, Ops(Int(2), Operator.Add, Int(3)))))
+    Parser.Number.exprP.parse("1 * 2").get.value should (be(Ops(Int(1), Operator.Mul, Int(2))))
+    Parser.Number.exprP.parse("(1 * 2)").get.value should (be(Ops(Int(1), Operator.Mul, Int(2))))
+    Parser.Number.exprP.parse("1 * 2 * 3").get.value should (be(Ops(Int(1), Operator.Mul, Ops(Int(2), Operator.Mul, Int(3)))))
+//    Parser.Number.exprP.parse("1 * 2").get.value should (be(Ops(Int(1), Operator.Add, Ops(Int(2), Operator.Add, Int(3)))))
   }
 }
